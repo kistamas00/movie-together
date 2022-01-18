@@ -12,7 +12,7 @@ public final class MediaController {
         this.consumers = new ArrayList<>();
     }
 
-    public static MediaController getInstance() {
+    public static synchronized MediaController getInstance() {
         if (mediaController == null) {
             mediaController = new MediaController();
         }
