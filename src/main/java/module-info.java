@@ -8,4 +8,6 @@ module org.kis.movietogether {
 
     opens org.kis.movietogether to javafx.fxml;
     exports org.kis.movietogether;
+    exports org.kis.movietogether.controller.ui;
+    opens org.kis.movietogether.controller.ui to javafx.fxml;
 }
