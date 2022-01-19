@@ -7,7 +7,10 @@ module org.kis.movietogether {
     requires org.kordamp.ikonli.javafx;
 
     opens org.kis.movietogether to javafx.fxml;
+    opens org.kis.movietogether.controller.ui to javafx.fxml;
+    opens org.kis.movietogether.controller.ui.management to javafx.fxml;
+
     exports org.kis.movietogether;
     exports org.kis.movietogether.controller.ui;
-    opens org.kis.movietogether.controller.ui to javafx.fxml;
+    exports org.kis.movietogether.controller.ui.management;
 }

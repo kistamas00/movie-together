@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<HBox xmlns:fx="http://javafx.com/fxml" alignment="CENTER"
+      fx:controller="org.kis.movietogether.controller.ui.management.ManagementController">
+    <fx:define>
+        <ToggleGroup fx:id="serverOrClient"/>
+
+        <String fx:id="logLabelText" fx:value="Log: "/>
+        <String fx:id="clientText" fx:value="Client"/>
+        <String fx:id="serverText" fx:value="Server"/>
+        <String fx:id="ipText" fx:value="IP: "/>
+        <String fx:id="portText" fx:value="Port: "/>
+        <String fx:id="defaultAddress" fx:value="127.0.0.1"/>
+        <String fx:id="defaultPort" fx:value="11111"/>
+        <String fx:id="defaultButton" fx:value="Start"/>
+
+        <Double fx:id="fullPadding" fx:value="20.0"/>
+        <Double fx:id="halfPadding" fx:value="10.0"/>
+        <Double fx:id="quarterPadding" fx:value="5.0"/>
+        <Double fx:id="labelWidth" fx:value="30.0"/>
+
+        <Boolean fx:id="isServerDefault" fx:value="true"/>
+    </fx:define>
+
+    <VBox>
+        <padding>
+            <Insets topRightBottomLeft="$fullPadding"/>
+        </padding>
+
+        <Label text="$logLabelText"/>
+
+        <TextArea fx:id="logArea" prefHeight="600" prefWidth="250" wrapText="true" editable="false"/>
+    </VBox>
+
+    <VBox>
+        <padding>
+            <Insets topRightBottomLeft="$fullPadding"/>
+        </padding>
+
+        <HBox alignment="CENTER">
+            <RadioButton fx:id="serverRadio" text="$serverText" toggleGroup="$serverOrClient" selected="true">
+                <padding>
+                    <Insets topRightBottomLeft="$fullPadding"/>
+                </padding>
+            </RadioButton>
+
+            <RadioButton fx:id="clientRadio" text="$clientText" toggleGroup="$serverOrClient">
+                <padding>
+                    <Insets topRightBottomLeft="$fullPadding"/>
+                </padding>
+            </RadioButton>
+        </HBox>
+
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets left="$fullPadding" right="$fullPadding" top="$halfPadding" bottom="$quarterPadding"/>
+            </padding>
+
+            <Label text="$ipText" minWidth="$labelWidth" maxWidth="$labelWidth"/>
+            <TextField fx:id="address" disable="$isServerDefault" text="$defaultAddress"/>
+        </HBox>
+
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets left="$fullPadding" right="$fullPadding" top="$halfPadding" bottom="$quarterPadding"/>
+            </padding>
+
+            <Label text="$portText" minWidth="$labelWidth" maxWidth="$labelWidth"/>
+            <TextField fx:id="port" text="$defaultPort"/>
+        </HBox>
+
+        <VBox alignment="CENTER" fx:id="buttonBox">
+            <padding>
+                <Insets left="$fullPadding" right="$fullPadding" top="$quarterPadding" bottom="$fullPadding"/>
+            </padding>
+
+            <Button fx:id="connect" text="$defaultButton"/>
+        </VBox>
+
+        <HBox alignment="CENTER">
+            <ListView fx:id="playlist"/>
+        </HBox>
+
+    </VBox>
+
+</HBox>
