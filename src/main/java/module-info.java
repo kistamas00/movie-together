@@ -4,7 +4,9 @@ module org.kis.movietogether {
 
     requires org.controlsfx.controls;
     requires validatorfx;
+    requires org.kordamp.ikonli.core;
     requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.bootstrapicons;
 
     opens org.kis.movietogether to javafx.fxml;
     opens org.kis.movietogether.controller.ui to javafx.fxml;

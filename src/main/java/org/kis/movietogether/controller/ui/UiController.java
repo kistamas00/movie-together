@@ -9,10 +9,6 @@ import org.kis.movietogether.controller.ui.management.ManagementController;
 import java.io.IOException;
 
 public class UiController extends Application {
-
-    private static final int HEIGHT = 600;
-    private static final int WIDTH = 500;
-
     private ManagementController managementController;
 
     public static void start() {
@@ -22,10 +18,11 @@ public class UiController extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(UiController.class.getResource("management-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), WIDTH, HEIGHT);
+        Scene scene = new Scene(fxmlLoader.load());
         managementController = fxmlLoader.getController();
         stage.setResizable(false);
-        stage.setTitle("Hello!");
+        stage.setTitle("MovieTogether");
+        stage.sizeToScene();
         stage.setScene(scene);
 
         stage.show();

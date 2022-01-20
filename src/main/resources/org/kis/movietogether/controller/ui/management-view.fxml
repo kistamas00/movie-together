@@ -3,79 +3,148 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import java.lang.*?>
-<HBox xmlns:fx="http://javafx.com/fxml" alignment="CENTER"
-      fx:controller="org.kis.movietogether.controller.ui.management.ManagementController">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.kis.movietogether.controller.ui.management.ManagementController">
     <fx:define>
         <ToggleGroup fx:id="serverOrClient"/>
 
-        <String fx:id="logLabelText" fx:value="Log: "/>
+        <String fx:id="logLabelText" fx:value="Log:"/>
         <String fx:id="clientText" fx:value="Client"/>
         <String fx:id="serverText" fx:value="Server"/>
-        <String fx:id="ipText" fx:value="IP: "/>
+        <String fx:id="ipText" fx:value="IP:"/>
         <String fx:id="portText" fx:value="Port: "/>
-        <String fx:id="defaultAddress" fx:value="127.0.0.1"/>
-        <String fx:id="defaultPort" fx:value="11111"/>
+        <String fx:id="defaultAddress" fx:value="localhost"/>
         <String fx:id="defaultButton" fx:value="Start"/>
+        <String fx:id="usernameText" fx:value="Username:"/>
 
         <Double fx:id="fullPadding" fx:value="20.0"/>
         <Double fx:id="halfPadding" fx:value="10.0"/>
         <Double fx:id="quarterPadding" fx:value="5.0"/>
-        <Double fx:id="labelWidth" fx:value="30.0"/>
+        <Double fx:id="labelWidth" fx:value="100.0"/>
 
         <Boolean fx:id="isServerDefault" fx:value="true"/>
+
+        <Integer fx:id="smallIcon" fx:value="16"/>
     </fx:define>
 
-    <VBox>
-        <padding>
-            <Insets topRightBottomLeft="$fullPadding"/>
-        </padding>
+    <top>
+        <MenuBar>
+            <Menu text="Audio">
+                <MenuItem text="RANDOM_AUDIO1">
+                    <graphic>
+                        <FontIcon iconLiteral="bi-soundwave" iconSize="$smallIcon"/>
+                    </graphic>
+                </MenuItem>
+                <MenuItem text="RANDOM_AUDIO2"/>
+                <MenuItem text="RANDOM_AUDIO3"/>
+            </Menu>
 
-        <Label text="$logLabelText"/>
+            <Menu text="Video">
+                <MenuItem text="RANDOM_VIDEO1">
+                    <graphic>
+                        <FontIcon iconLiteral="bi-camera-video" iconSize="$smallIcon"/>
+                    </graphic>
+                </MenuItem>
+                <MenuItem text="RANDOM_VIDEO2"/>
+                <MenuItem text="RANDOM_VIDEO3"/>
+            </Menu>
 
-        <TextArea fx:id="logArea" prefHeight="600" prefWidth="250" wrapText="true" editable="false"/>
-    </VBox>
+            <Menu text="Subtitle">
+                <MenuItem text="RANDOM_SUBTITLE1">
+                    <graphic>
+                        <FontIcon iconLiteral="bi-badge-cc" iconSize="$smallIcon"/>
+                    </graphic>
+                </MenuItem>
+                <MenuItem text="RANDOM_SUBTITLE2"/>
+                <MenuItem text="RANDOM_SUBTITLE3"/>
+                <SeparatorMenuItem/>
+                <MenuItem text="Disable"/>
+            </Menu>
 
-    <VBox>
-        <padding>
-            <Insets topRightBottomLeft="$fullPadding"/>
-        </padding>
+        </MenuBar>
+    </top>
 
-        <HBox alignment="CENTER">
-            <RadioButton fx:id="serverRadio" text="$serverText" toggleGroup="$serverOrClient" selected="true">
-                <padding>
-                    <Insets topRightBottomLeft="$fullPadding"/>
-                </padding>
-            </RadioButton>
-
-            <RadioButton fx:id="clientRadio" text="$clientText" toggleGroup="$serverOrClient">
-                <padding>
-                    <Insets topRightBottomLeft="$fullPadding"/>
-                </padding>
-            </RadioButton>
-        </HBox>
-
-        <HBox alignment="CENTER">
+    <left>
+        <VBox fx:id="logVBox">
             <padding>
-                <Insets left="$fullPadding" right="$fullPadding" top="$halfPadding" bottom="$quarterPadding"/>
+                <Insets topRightBottomLeft="$halfPadding"/>
             </padding>
 
-            <Label text="$ipText" minWidth="$labelWidth" maxWidth="$labelWidth"/>
-            <TextField fx:id="addressField" disable="$isServerDefault" text="$defaultAddress"/>
-        </HBox>
+            <ListView fx:id="usersList"/>
 
-        <VBox alignment="CENTER" fx:id="buttonBox">
-            <padding>
-                <Insets left="$fullPadding" right="$fullPadding" top="$quarterPadding" bottom="$fullPadding"/>
-            </padding>
+            <Label text="$logLabelText"/>
 
-            <Button fx:id="connectButton" text="$defaultButton" onAction="#onConnectButton"/>
+            <TextArea fx:id="logArea" prefWidth="250" wrapText="true" editable="false" HBox.hgrow="ALWAYS"/>
         </VBox>
+    </left>
 
-        <HBox alignment="CENTER">
-            <ListView fx:id="playlist"/>
-        </HBox>
+    <right>
+        <VBox>
+            <padding>
+                <Insets topRightBottomLeft="$halfPadding"/>
+            </padding>
 
-    </VBox>
+            <HBox alignment="CENTER">
+                <RadioButton fx:id="serverRadio" text="$serverText" toggleGroup="$serverOrClient" selected="true">
+                    <padding>
+                        <Insets topRightBottomLeft="$fullPadding"/>
+                    </padding>
+                </RadioButton>
 
-</HBox>
+                <RadioButton fx:id="clientRadio" text="$clientText" toggleGroup="$serverOrClient">
+                    <padding>
+                        <Insets topRightBottomLeft="$fullPadding"/>
+                    </padding>
+                </RadioButton>
+            </HBox>
+
+            <HBox alignment="CENTER">
+                <padding>
+                    <Insets topRightBottomLeft="$halfPadding"/>
+                </padding>
+
+                <Label text="$ipText" minWidth="$labelWidth" maxWidth="$labelWidth"/>
+                <TextField fx:id="addressField" disable="$isServerDefault" text="$defaultAddress"/>
+            </HBox>
+
+            <HBox alignment="CENTER">
+                <padding>
+                    <Insets topRightBottomLeft="$halfPadding"/>
+                </padding>
+
+                <Label text="$usernameText" minWidth="$labelWidth" maxWidth="$labelWidth"/>
+                <TextField fx:id="usernameField"/>
+            </HBox>
+
+            <VBox alignment="CENTER" fx:id="buttonBox">
+                <padding>
+                    <Insets topRightBottomLeft="$halfPadding"/>
+                </padding>
+
+                <Button fx:id="connectButton" text="$defaultButton" onAction="#onConnectButton"/>
+            </VBox>
+
+            <ListView fx:id="playlist" VBox.vgrow="ALWAYS"/>
+
+        </VBox>
+    </right>
+
+    <bottom>
+
+        <VBox>
+            <padding>
+                <Insets topRightBottomLeft="$halfPadding"/>
+            </padding>
+            <Button>
+                <graphic>
+                    <FontIcon iconLiteral="bi-play"/>
+                </graphic>
+            </Button>
+            <Slider fx:id="videoSlider"/>
+        </VBox>
+    </bottom>
+
+
+</BorderPane>

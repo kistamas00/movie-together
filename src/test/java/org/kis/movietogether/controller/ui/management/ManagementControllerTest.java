@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kis.movietogether.controller.ui.UiController;
 import org.testfx.api.FxRobot;
@@ -30,6 +31,7 @@ class ManagementControllerTest {
     private static final String CONNECT_BUTTON = "#connectButton";
     private static final String ADDRESS_FIELD = "#addressField";
     private static final String LOG_AREA = "#logArea";
+    private static final String USER_FIELD = "#usernameField";
 
     private static ManagementController managementController;
 
@@ -67,9 +69,14 @@ class ManagementControllerTest {
         RadioButton client = robot.lookup(CLIENT_RADIO).queryAs(RadioButton.class);
         Button connect = robot.lookup(CONNECT_BUTTON).queryAs(Button.class);
         TextField address = robot.lookup(ADDRESS_FIELD).queryAs(TextField.class);
+        TextField username = robot.lookup(USER_FIELD).queryAs(TextField.class);
 
         //when
         robot.clickOn(SERVER_RADIO);
+        robot.clickOn(USER_FIELD);
+        robot.clickOn(USER_FIELD);
+        robot.eraseText(username.getText().length());
+        robot.write("a", 1);
         robot.clickOn(CONNECT_BUTTON);
 
         //then
@@ -98,12 +105,16 @@ class ManagementControllerTest {
         RadioButton client = robot.lookup(CLIENT_RADIO).queryAs(RadioButton.class);
         Button connect = robot.lookup(CONNECT_BUTTON).queryAs(Button.class);
         TextField address = robot.lookup(ADDRESS_FIELD).queryAs(TextField.class);
+        TextField username = robot.lookup(USER_FIELD).queryAs(TextField.class);
 
         //when
         robot.clickOn(CLIENT_RADIO);
         robot.clickOn(ADDRESS_FIELD);
         robot.eraseText(address.getText().length());
-        robot.write("192.168.0.1");
+        robot.write("::", 1);
+        robot.clickOn(USER_FIELD);
+        robot.eraseText(username.getText().length());
+        robot.write("asd", 1);
         robot.clickOn(CONNECT_BUTTON);
 
         //then
@@ -124,21 +135,42 @@ class ManagementControllerTest {
     /**
      * param robot
      */
-    @Test
-    @DisplayName("Set invalid IP")
-    void testSetInvalidIP(FxRobot robot) {
+    @ParameterizedTest(name = "[{index}] IP is: {0}, valid: {1}")
+    @CsvSource({
+            "192.168.0.1, true",
+            "asd, false",
+            "0.300.0.0, false",
+            " , false",
+            "127., false",
+            "::, true",
+            "::1, true",
+            "::ffff:7f00:1, true"
+    })
+    @DisplayName("Test IP input")
+    void testSetInvalidIP(String arg1, boolean arg2, FxRobot robot) {
         //given
         Button connect = robot.lookup(CONNECT_BUTTON).queryAs(Button.class);
         TextField address = robot.lookup(ADDRESS_FIELD).queryAs(TextField.class);
+        TextField username = robot.lookup(USER_FIELD).queryAs(TextField.class);
 
         //when
         robot.clickOn(CLIENT_RADIO);
         robot.clickOn(ADDRESS_FIELD);
         robot.eraseText(address.getText().length());
-        robot.write("asdasd");
+        if (arg1 != null) {
+            robot.write(arg1);
+        }
+        robot.clickOn(USER_FIELD);
+        robot.eraseText(username.getText().length());
+        robot.write("u", 1);
 
         //then
-        assertThat(connect).isDisabled();
+        if (arg2) {
+            assertThat(connect).isEnabled();
+        } else {
+            assertThat(connect).isDisabled();
+        }
+
     }
 
     /**
@@ -187,5 +219,20 @@ class ManagementControllerTest {
             assertThat(connect.getText()).isEqualTo("Connect");
             assertThat(address).isEnabled();
         }
+    }
+
+    /**
+     * param robot
+     */
+    @Test
+    @DisplayName("Test empty username input")
+    void testUsername(FxRobot robot) {
+        //given
+        Button connect = robot.lookup(CONNECT_BUTTON).queryAs(Button.class);
+
+        //when
+
+        //then
+        assertThat(connect).isDisabled();
     }
 }

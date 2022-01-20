@@ -22,6 +22,7 @@ public class ManagementController {
     private static final Pattern IPV4_PATTERN = Pattern.compile(VALID_IPV4);
 
     private static final String INVALID_IP = "Invalid IP address!";
+    private static final String USERNAME_EMPTY = "Username can not be empty!";
     private static final String CAN_NOT_CONNECT = "Can not connect because:\n";
 
     private static final String BUTTON_START = "Start";
@@ -67,6 +68,9 @@ public class ManagementController {
 
     @FXML
     private RadioButton serverRadio;
+
+    @FXML
+    private TextField usernameField;
 
     @FXML
     protected void initialize() {
@@ -117,9 +121,14 @@ public class ManagementController {
     private void createInputValidator() {
         inputValidator.createCheck()
                 .dependsOn("ip", addressField.textProperty())
-
                 .withMethod((Check.Context context) -> checkAddress(context, inServerMode))
                 .decorates(addressField)
+                .immediate();
+
+        inputValidator.createCheck()
+                .dependsOn("username", usernameField.textProperty())
+                .withMethod(this::checkUsername)
+                .decorates(usernameField)
                 .immediate();
 
         TooltipWrapper<Button> connectTooltip = new TooltipWrapper<>(
@@ -144,12 +153,14 @@ public class ManagementController {
         clientRadio.setDisable(true);
         serverRadio.setDisable(true);
         addressField.setDisable(true);
+        usernameField.setDisable(true);
     }
 
     private void disconnect() {
         isConnected = false;
         clientRadio.setDisable(false);
         serverRadio.setDisable(false);
+        usernameField.setDisable(false);
         addressField.setDisable(inServerMode);
     }
 
@@ -194,6 +205,13 @@ public class ManagementController {
             } else {
                 connectButton.setText(BUTTON_CONNECT);
             }
+        }
+    }
+
+    private void checkUsername(Check.Context context) {
+        String username = context.get("username");
+        if (username.equals("")) {
+            context.error(USERNAME_EMPTY);
         }
     }
 
