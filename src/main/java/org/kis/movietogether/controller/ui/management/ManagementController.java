@@ -21,23 +21,19 @@ public class ManagementController {
     private static final Pattern IPV6_PATTERN = Pattern.compile(VALID_IPV6);
     private static final Pattern IPV4_PATTERN = Pattern.compile(VALID_IPV4);
 
-    private static final int PORT_MAX = 65535;
-    private static final int PORT_MIN = 0;
-
     private static final String INVALID_IP = "Invalid IP address!";
     private static final String CAN_NOT_CONNECT = "Can not connect because:\n";
-    private static final String PORT_NAN = "Port has to be an integer!";
-    private static final String PORT_MIN_ERROR = "Port has to be greater than " + PORT_MIN + "!";
-    private static final String PORT_MAX_ERROR = "Port has to be lower than " + PORT_MAX + "!";
-
 
     private static final String BUTTON_START = "Start";
+    private static final String BUTTON_STOP = "Stop";
     private static final String BUTTON_CONNECT = "Connect";
+    private static final String BUTTON_DISCONNECT = "Disconnect";
 
 
     private final Validator inputValidator = new Validator();
 
     private boolean inServerMode;
+    private boolean isConnected;
 
     @FXML
     private ListView<String> playlist;
@@ -49,13 +45,10 @@ public class ManagementController {
     private String serverText;
 
     @FXML
-    private TextField address;
+    private TextField addressField;
 
     @FXML
-    private TextField port;
-
-    @FXML
-    private Button connect;
+    private Button connectButton;
 
     @FXML
     private VBox buttonBox;
@@ -68,6 +61,22 @@ public class ManagementController {
 
     @FXML
     private TextArea logArea;
+
+    @FXML
+    private RadioButton clientRadio;
+
+    @FXML
+    private RadioButton serverRadio;
+
+    @FXML
+    protected void initialize() {
+        inServerMode = isServerDefault;
+        isConnected = false;
+
+        serverOrClient.selectedToggleProperty().addListener(this::onToggle);
+
+        createInputValidator();
+    }
 
     private static void checkAddress(Check.Context context, boolean inServerMode) {
         String ipAddress = context.get("ip");
@@ -82,58 +91,23 @@ public class ManagementController {
 
     }
 
-    private static void checkPort(Check.Context context) {
-        try {
-            int portNumber = Integer.parseInt(context.get("port"));
-
-            if (portNumber < PORT_MIN) {
-                context.error(PORT_MIN_ERROR);
-            }
-
-            if (portNumber > PORT_MAX) {
-                context.error(PORT_MAX_ERROR);
-            }
-        } catch (NumberFormatException exception) {
-            context.error(PORT_NAN);
-        }
-    }
-
-    @FXML
-    protected void initialize() {
-        inServerMode = isServerDefault;
-
-        serverOrClient.selectedToggleProperty().addListener(this::onToggle);
-
-        createInputValidator();
-    }
-
     private void onToggle(ObservableValue<? extends Toggle> observableValue, Toggle oldToggle, Toggle newToggle) {
         final String value = ((RadioButton) newToggle).getText();
 
         inServerMode = serverText.equals(value);
 
         if (inServerMode) {
-            address.setText(defaultAddress);
-            connect.setText(BUTTON_START);
-        } else {
-            connect.setText(BUTTON_CONNECT);
+            addressField.setText(defaultAddress);
         }
 
-        address.setDisable(inServerMode);
+        setConnectButtonText();
+
+        addressField.setDisable(inServerMode);
 
     }
 
     private String getAddress() {
-        return address.getText();
-    }
-
-    private int getPort() {
-        try {
-            return Integer.parseInt(port.getText());
-        } catch (NumberFormatException exception) {
-            exception.printStackTrace();
-            return -1;
-        }
+        return addressField.getText();
     }
 
     public boolean isServerInServerMode() {
@@ -142,22 +116,14 @@ public class ManagementController {
 
     private void createInputValidator() {
         inputValidator.createCheck()
-                .dependsOn("ip", address.textProperty())
+                .dependsOn("ip", addressField.textProperty())
 
-                .withMethod((Check.Context context) -> {
-                    checkAddress(context, inServerMode);
-                })
-                .decorates(address)
-                .immediate();
-
-        inputValidator.createCheck()
-                .dependsOn("port", port.textProperty())
-                .withMethod(ManagementController::checkPort)
-                .decorates(port)
+                .withMethod((Check.Context context) -> checkAddress(context, inServerMode))
+                .decorates(addressField)
                 .immediate();
 
         TooltipWrapper<Button> connectTooltip = new TooltipWrapper<>(
-                connect,
+                connectButton,
                 inputValidator.containsErrorsProperty(),
                 Bindings.concat(CAN_NOT_CONNECT, inputValidator.createStringBinding())
         );
@@ -167,6 +133,68 @@ public class ManagementController {
 
     public void log(String string) {
         logArea.appendText(string + "\n");
+    }
+
+
+    private void connect() {
+        //try to connect
+
+        //success:
+        isConnected = true;
+        clientRadio.setDisable(true);
+        serverRadio.setDisable(true);
+        addressField.setDisable(true);
+    }
+
+    private void disconnect() {
+        isConnected = false;
+        clientRadio.setDisable(false);
+        serverRadio.setDisable(false);
+        addressField.setDisable(inServerMode);
+    }
+
+    @FXML
+    protected void onConnectButton() {
+        if (isConnected) {
+            disconnect();
+        } else {
+            connect();
+        }
+
+        setConnectButtonText();
+        setAddressField();
+    }
+
+    private void setConnectButtonText() {
+        if (inServerMode) {
+            if (isConnected) {
+                connectButton.setText(BUTTON_STOP);
+            } else {
+                connectButton.setText(BUTTON_START);
+            }
+        } else {
+            if (isConnected) {
+                connectButton.setText(BUTTON_DISCONNECT);
+            } else {
+                connectButton.setText(BUTTON_CONNECT);
+            }
+        }
+    }
+
+    private void setAddressField() {
+        if (inServerMode) {
+            if (isConnected) {
+                connectButton.setText(BUTTON_STOP);
+            } else {
+                connectButton.setText(BUTTON_START);
+            }
+        } else {
+            if (isConnected) {
+                connectButton.setText(BUTTON_DISCONNECT);
+            } else {
+                connectButton.setText(BUTTON_CONNECT);
+            }
+        }
     }
 
 

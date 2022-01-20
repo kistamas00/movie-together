@@ -25,12 +25,11 @@ import static org.testfx.assertions.api.Assertions.assertThat;
 @ExtendWith(ApplicationExtension.class)
 class ManagementControllerTest {
 
-    private static final String CLIENT_ID = "#clientRadio";
-    private static final String SERVER_ID = "#serverRadio";
-    private static final String CONNECT_ID = "#connect";
-    private static final String ADDRESS_ID = "#address";
-    private static final String PORT_ID = "#port";
-    private static final String LOG_ID = "#logArea";
+    private static final String CLIENT_RADIO = "#clientRadio";
+    private static final String SERVER_RADIO = "#serverRadio";
+    private static final String CONNECT_BUTTON = "#connectButton";
+    private static final String ADDRESS_FIELD = "#addressField";
+    private static final String LOG_AREA = "#logArea";
 
     private static ManagementController managementController;
 
@@ -64,26 +63,27 @@ class ManagementControllerTest {
     @DisplayName("Start server")
     void testStartServer(FxRobot robot) {
         //given
-        RadioButton server = robot.lookup(SERVER_ID).queryAs(RadioButton.class);
-        RadioButton client = robot.lookup(CLIENT_ID).queryAs(RadioButton.class);
-        Button connect = robot.lookup(CONNECT_ID).queryAs(Button.class);
-        TextField port = robot.lookup(PORT_ID).queryAs(TextField.class);
+        RadioButton server = robot.lookup(SERVER_RADIO).queryAs(RadioButton.class);
+        RadioButton client = robot.lookup(CLIENT_RADIO).queryAs(RadioButton.class);
+        Button connect = robot.lookup(CONNECT_BUTTON).queryAs(Button.class);
+        TextField address = robot.lookup(ADDRESS_FIELD).queryAs(TextField.class);
 
         //when
-        robot.clickOn(SERVER_ID);
-        robot.clickOn(PORT_ID);
-        robot.eraseText(port.getText().length());
-        robot.write("8080");
+        robot.clickOn(SERVER_RADIO);
+        robot.clickOn(CONNECT_BUTTON);
 
         //then
-        assertThat(server).isNotNull();
-        assertThat(client).isNotNull();
-        assertThat(connect).isNotNull();
         assertThat(managementController.isServerInServerMode()).isTrue();
 
+        assertThat(address).isDisabled();
+
         assertThat(server.isSelected()).isTrue();
+        assertThat(server).isDisabled();
+
         assertThat(client.isSelected()).isFalse();
-        assertThat(connect.getText()).isEqualTo("Start");
+        assertThat(client).isDisabled();
+
+        assertThat(connect.getText()).isEqualTo("Stop");
         assertThat(connect).isEnabled();
     }
 
@@ -94,27 +94,30 @@ class ManagementControllerTest {
     @DisplayName("Start client")
     void testStartClient(FxRobot robot) {
         //given
-        RadioButton server = robot.lookup(SERVER_ID).queryAs(RadioButton.class);
-        RadioButton client = robot.lookup(CLIENT_ID).queryAs(RadioButton.class);
-        Button connect = robot.lookup(CONNECT_ID).queryAs(Button.class);
-        TextField port = robot.lookup(PORT_ID).queryAs(TextField.class);
-        TextField address = robot.lookup(ADDRESS_ID).queryAs(TextField.class);
+        RadioButton server = robot.lookup(SERVER_RADIO).queryAs(RadioButton.class);
+        RadioButton client = robot.lookup(CLIENT_RADIO).queryAs(RadioButton.class);
+        Button connect = robot.lookup(CONNECT_BUTTON).queryAs(Button.class);
+        TextField address = robot.lookup(ADDRESS_FIELD).queryAs(TextField.class);
 
         //when
-        robot.clickOn(CLIENT_ID);
-        robot.clickOn(ADDRESS_ID);
+        robot.clickOn(CLIENT_RADIO);
+        robot.clickOn(ADDRESS_FIELD);
         robot.eraseText(address.getText().length());
         robot.write("192.168.0.1");
-        robot.clickOn(PORT_ID);
-        robot.eraseText(port.getText().length());
-        robot.write("8080");
+        robot.clickOn(CONNECT_BUTTON);
 
         //then
         assertThat(managementController.isServerInServerMode()).isFalse();
 
+        assertThat(address).isDisabled();
+
         assertThat(server.isSelected()).isFalse();
+        assertThat(server).isDisabled();
+
         assertThat(client.isSelected()).isTrue();
-        assertThat(connect.getText()).isEqualTo("Connect");
+        assertThat(client).isDisabled();
+
+        assertThat(connect.getText()).isEqualTo("Disconnect");
         assertThat(connect).isEnabled();
     }
 
@@ -125,36 +128,14 @@ class ManagementControllerTest {
     @DisplayName("Set invalid IP")
     void testSetInvalidIP(FxRobot robot) {
         //given
-        Button connect = robot.lookup(CONNECT_ID).queryAs(Button.class);
-        TextField address = robot.lookup(ADDRESS_ID).queryAs(TextField.class);
-
+        Button connect = robot.lookup(CONNECT_BUTTON).queryAs(Button.class);
+        TextField address = robot.lookup(ADDRESS_FIELD).queryAs(TextField.class);
 
         //when
-        robot.clickOn(CLIENT_ID);
-        robot.clickOn(ADDRESS_ID);
+        robot.clickOn(CLIENT_RADIO);
+        robot.clickOn(ADDRESS_FIELD);
         robot.eraseText(address.getText().length());
         robot.write("asdasd");
-
-        //then
-        assertThat(connect).isDisabled();
-    }
-
-    /**
-     * param robot
-     */
-    @ParameterizedTest
-    @ValueSource(strings = {"asdasd", "-1", "100000"})
-    @DisplayName("Set invalid port")
-    void testSetInvalidPort(String arg, FxRobot robot) {
-        //given
-        Button connect = robot.lookup(CONNECT_ID).queryAs(Button.class);
-        TextField port = robot.lookup(PORT_ID).queryAs(TextField.class);
-
-        //when
-        robot.clickOn(CLIENT_ID);
-        robot.clickOn(PORT_ID);
-        robot.eraseText(port.getText().length());
-        robot.write(arg);
 
         //then
         assertThat(connect).isDisabled();
@@ -169,7 +150,7 @@ class ManagementControllerTest {
         //given
         String logMessage1 = "message 1";
         String logMessage2 = "message 1";
-        TextArea logArea = robot.lookup(LOG_ID).queryAs(TextArea.class);
+        TextArea logArea = robot.lookup(LOG_AREA).queryAs(TextArea.class);
 
         //when
         managementController.log(logMessage1);
@@ -178,5 +159,33 @@ class ManagementControllerTest {
         //then
         assertThat(logArea.getText()).contains(logMessage1);
         assertThat(logArea.getText()).contains(logMessage2);
+    }
+
+    /**
+     * param robot
+     */
+    @ParameterizedTest(name = "[{index}] Is server selected: {0}")
+    @ValueSource(booleans = {true, false})
+    @DisplayName("Test default connect button text")
+    void testDefaultButtonText(boolean arg, FxRobot robot) {
+        //given
+        Button connect = robot.lookup(CONNECT_BUTTON).queryAs(Button.class);
+        TextField address = robot.lookup(ADDRESS_FIELD).queryAs(TextField.class);
+
+        //when
+        if (arg) {
+            robot.clickOn(SERVER_RADIO);
+        } else {
+            robot.clickOn(CLIENT_RADIO);
+        }
+
+        //then
+        if (arg) {
+            assertThat(connect.getText()).isEqualTo("Start");
+            assertThat(address).isDisabled();
+        } else {
+            assertThat(connect.getText()).isEqualTo("Connect");
+            assertThat(address).isEnabled();
+        }
     }
 }

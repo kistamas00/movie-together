@@ -61,16 +61,7 @@
             </padding>
 
             <Label text="$ipText" minWidth="$labelWidth" maxWidth="$labelWidth"/>
-            <TextField fx:id="address" disable="$isServerDefault" text="$defaultAddress"/>
-        </HBox>
-
-        <HBox alignment="CENTER">
-            <padding>
-                <Insets left="$fullPadding" right="$fullPadding" top="$halfPadding" bottom="$quarterPadding"/>
-            </padding>
-
-            <Label text="$portText" minWidth="$labelWidth" maxWidth="$labelWidth"/>
-            <TextField fx:id="port" text="$defaultPort"/>
+            <TextField fx:id="addressField" disable="$isServerDefault" text="$defaultAddress"/>
         </HBox>
 
         <VBox alignment="CENTER" fx:id="buttonBox">
@@ -78,7 +69,7 @@
                 <Insets left="$fullPadding" right="$fullPadding" top="$quarterPadding" bottom="$fullPadding"/>
             </padding>
 
-            <Button fx:id="connect" text="$defaultButton"/>
+            <Button fx:id="connectButton" text="$defaultButton" onAction="#onConnectButton"/>
         </VBox>
 
         <HBox alignment="CENTER">
