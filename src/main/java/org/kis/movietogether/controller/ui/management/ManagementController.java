@@ -118,26 +118,11 @@ public class ManagementController {
         return inServerMode;
     }
 
-    private void createInputValidator() {
-        inputValidator.createCheck()
-                .dependsOn("ip", addressField.textProperty())
-                .withMethod((Check.Context context) -> checkAddress(context, inServerMode))
-                .decorates(addressField)
-                .immediate();
-
-        inputValidator.createCheck()
-                .dependsOn("username", usernameField.textProperty())
-                .withMethod(this::checkUsername)
-                .decorates(usernameField)
-                .immediate();
-
-        TooltipWrapper<Button> connectTooltip = new TooltipWrapper<>(
-                connectButton,
-                inputValidator.containsErrorsProperty(),
-                Bindings.concat(CAN_NOT_CONNECT, inputValidator.createStringBinding())
-        );
-        connectTooltip.setId("connectionTooltip");
-        buttonBox.getChildren().add(connectTooltip);
+    private static void checkUsername(Check.Context context) {
+        String username = context.get("username");
+        if ("".equals(username)) {
+            context.error(USERNAME_EMPTY);
+        }
     }
 
     public void log(String string) {
@@ -173,7 +158,6 @@ public class ManagementController {
         }
 
         setConnectButtonText();
-        setAddressField();
     }
 
     private void setConnectButtonText() {
@@ -192,28 +176,25 @@ public class ManagementController {
         }
     }
 
-    private void setAddressField() {
-        if (inServerMode) {
-            if (isConnected) {
-                connectButton.setText(BUTTON_STOP);
-            } else {
-                connectButton.setText(BUTTON_START);
-            }
-        } else {
-            if (isConnected) {
-                connectButton.setText(BUTTON_DISCONNECT);
-            } else {
-                connectButton.setText(BUTTON_CONNECT);
-            }
-        }
+    private void createInputValidator() {
+        inputValidator.createCheck()
+                .dependsOn("ip", addressField.textProperty())
+                .withMethod((Check.Context context) -> checkAddress(context, inServerMode))
+                .decorates(addressField)
+                .immediate();
+
+        inputValidator.createCheck()
+                .dependsOn("username", usernameField.textProperty())
+                .withMethod(ManagementController::checkUsername)
+                .decorates(usernameField)
+                .immediate();
+
+        TooltipWrapper<Button> connectTooltip = new TooltipWrapper<>(
+                connectButton,
+                inputValidator.containsErrorsProperty(),
+                Bindings.concat(CAN_NOT_CONNECT, inputValidator.createStringBinding())
+        );
+        connectTooltip.setId("connectionTooltip");
+        buttonBox.getChildren().add(connectTooltip);
     }
-
-    private void checkUsername(Check.Context context) {
-        String username = context.get("username");
-        if (username.equals("")) {
-            context.error(USERNAME_EMPTY);
-        }
-    }
-
-
 }

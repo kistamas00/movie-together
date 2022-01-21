@@ -12,6 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.8.1</junit.version>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
@@ -133,6 +134,10 @@
                     <argLine>
                         --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
                     </argLine>
+
+                    <excludes>
+                        <exclude>ManagementControllerTest.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
         </plugins>
