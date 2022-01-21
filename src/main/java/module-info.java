@@ -10,7 +10,6 @@ module org.kis.movietogether {
     requires spring.boot.autoconfigure;
     requires spring.boot;
 
-    opens org.kis.movietogether to javafx.fxml;
     opens org.kis.movietogether.controller.ui to javafx.fxml;
     opens org.kis.movietogether.controller.ui.management to javafx.fxml;
     opens org.kis.movietogether to javafx.fxml, spring.core;
