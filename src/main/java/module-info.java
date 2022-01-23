@@ -9,6 +9,7 @@ module org.kis.movietogether {
     requires org.kordamp.ikonli.bootstrapicons;
     requires spring.boot.autoconfigure;
     requires spring.boot;
+    requires commons.validator;
 
     opens org.kis.movietogether.controller.ui to javafx.fxml;
     opens org.kis.movietogether.controller.ui.management to javafx.fxml;

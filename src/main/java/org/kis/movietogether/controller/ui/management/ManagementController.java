@@ -8,19 +8,9 @@ import javafx.scene.layout.VBox;
 import net.synedra.validatorfx.Check;
 import net.synedra.validatorfx.TooltipWrapper;
 import net.synedra.validatorfx.Validator;
-
-import java.util.regex.Pattern;
-
+import org.apache.commons.validator.routines.InetAddressValidator;
 
 public class ManagementController {
-    private static final String VALID_IPV6 =
-            "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))";
-    private static final String VALID_IPV4 =
-            "(\\b25[0-5]|\\b2[0-4][0-9]|\\b[01]?[0-9][0-9]?)(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}";
-
-    private static final Pattern IPV6_PATTERN = Pattern.compile(VALID_IPV6);
-    private static final Pattern IPV4_PATTERN = Pattern.compile(VALID_IPV4);
-
     private static final String INVALID_IP = "Invalid IP address!";
     private static final String USERNAME_EMPTY = "Username can not be empty!";
     private static final String CAN_NOT_CONNECT = "Can not connect because:\n";
@@ -85,11 +75,7 @@ public class ManagementController {
     private static void checkAddress(Check.Context context, boolean inServerMode) {
         String ipAddress = context.get("ip");
 
-        if (
-                !inServerMode &&
-                        !IPV4_PATTERN.matcher(ipAddress).matches() &&
-                        !IPV6_PATTERN.matcher(ipAddress).matches()
-        ) {
+        if (!inServerMode && !InetAddressValidator.getInstance().isValid(ipAddress)) {
             context.error(INVALID_IP);
         }
 
@@ -110,17 +96,9 @@ public class ManagementController {
 
     }
 
-    private String getAddress() {
-        return addressField.getText();
-    }
-
-    public boolean isServerInServerMode() {
-        return inServerMode;
-    }
-
     private static void checkUsername(Check.Context context) {
         String username = context.get("username");
-        if ("".equals(username)) {
+        if (username.isEmpty()) {
             context.error(USERNAME_EMPTY);
         }
     }

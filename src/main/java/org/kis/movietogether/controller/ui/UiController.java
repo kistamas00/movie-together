@@ -28,7 +28,7 @@ public class UiController extends Application {
         stage.show();
     }
 
-    public ManagementController getManagementController() {
+    private ManagementController getManagementController() {
         return managementController;
     }
 }
