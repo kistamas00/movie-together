@@ -1,5 +1,6 @@
 package org.kis.movietogether;
 
+import org.kis.movietogether.controller.ui.UiController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -14,5 +15,7 @@ public class Application {
         SpringApplication app = new SpringApplication(Application.class);
         app.setDefaultProperties(Collections.singletonMap("server.port", APPLICATION_DEFAULT_PORT));
         app.run(args);
+
+        UiController.start();
     }
 }
