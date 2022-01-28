@@ -5,13 +5,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.kis.movietogether.controller.ui.management.ManagementController;
+import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 
+@Controller
 public class UiController extends Application {
     private ManagementController managementController;
 
-    public static void start() {
+    @PostConstruct
+    public void start() {
         launch();
     }
 
