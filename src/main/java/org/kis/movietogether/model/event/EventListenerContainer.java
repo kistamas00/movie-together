@@ -1,5 +1,7 @@
-package org.kis.movietogether.controller.event;
+package org.kis.movietogether.model.event;
 
+import org.kis.movietogether.controller.event.MediaEventListener;
+import org.kis.movietogether.controller.event.WebSocketEventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;

@@ -1,12 +1,9 @@
 package org.kis.movietogether.controller;
 
-import org.kis.movietogether.controller.event.EventListenerContainer;
+import org.kis.movietogether.model.event.EventListenerContainer;
 import org.kis.movietogether.controller.event.MediaEventListener;
 import org.kis.movietogether.controller.event.WebSocketEventListener;
 import org.springframework.stereotype.Controller;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public final class ApplicationController {
