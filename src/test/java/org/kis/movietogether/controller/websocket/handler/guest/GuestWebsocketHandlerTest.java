@@ -74,6 +74,7 @@ class GuestWebsocketHandlerTest {
         final User host = new User(session);
         final Set<User> updatedUsers = Set.of(host, new User("User1"), new User("User2"));
         when(userContainer.getUsersWithSession()).thenReturn(Set.of(host));
+        when(userContainer.getUsers()).thenReturn(updatedUsers);
 
         // WHEN
         guestWebsocketHandler.handleUserListUpdateMessage(session, userListUpdateMessage);
@@ -81,6 +82,6 @@ class GuestWebsocketHandlerTest {
         // THEN
         verify(userContainer, times(1)).clear();
         verify(userContainer, times(1)).addUsers(updatedUsers);
-        verify(webSocketController, times(1)).userListReceivedByGuest(updatedUsers);
+        verify(webSocketController, times(1)).userListUpdated(updatedUsers);
     }
 }

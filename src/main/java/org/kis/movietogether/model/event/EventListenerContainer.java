@@ -23,7 +23,7 @@ public class EventListenerContainer {
         mediaEventListeners.add(mediaEventListener);
     }
 
-    public void addWebSocketEventListeners(final WebSocketEventListener webSocketEventListener) {
+    public void addWebSocketEventListener(final WebSocketEventListener webSocketEventListener) {
         webSocketEventListeners.add(webSocketEventListener);
     }
 

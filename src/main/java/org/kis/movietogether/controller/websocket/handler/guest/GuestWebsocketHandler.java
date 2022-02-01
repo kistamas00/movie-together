@@ -38,7 +38,7 @@ public class GuestWebsocketHandler extends AbstractWebSocketHandler {
         userContainer.clear();
         userContainer.addUsers(newUsers);
         LOGGER.info("User list updated: [{}, {}]", sessionId, newUsers);
-        webSocketController.userListReceivedByGuest(newUsers);
+        webSocketController.userListUpdated(userContainer.getUsers());
     }
 
     @Override

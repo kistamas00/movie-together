@@ -6,10 +6,11 @@ import org.kis.movietogether.controller.event.MediaEventListener;
 import org.kis.movietogether.controller.event.WebSocketEventListener;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 class EventListenerContainerTest {
 
@@ -36,9 +37,9 @@ class EventListenerContainerTest {
 
     @Test
     void testAddWebSocketEventListeners() {
-         // GIVEN
+        // GIVEN
         final WebSocketEventListener webSocketEventListener = mock(WebSocketEventListener.class);
-        eventListenerContainer.addWebSocketEventListeners(webSocketEventListener);
+        eventListenerContainer.addWebSocketEventListener(webSocketEventListener);
 
         // WHEN
         final Set<WebSocketEventListener> webSocketEventListeners = eventListenerContainer.getWebSocketEventListeners();
@@ -63,9 +64,9 @@ class EventListenerContainerTest {
 
     @Test
     void testGetWebSocketEventListeners() {
-         // GIVEN
+        // GIVEN
         final WebSocketEventListener webSocketEventListener = mock(WebSocketEventListener.class);
-        eventListenerContainer.addWebSocketEventListeners(webSocketEventListener);
+        eventListenerContainer.addWebSocketEventListener(webSocketEventListener);
 
         // WHEN
         final Set<WebSocketEventListener> webSocketEventListeners = eventListenerContainer.getWebSocketEventListeners();

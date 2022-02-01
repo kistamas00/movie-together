@@ -34,7 +34,7 @@ public class UiController extends Application {
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         springContext.close();
         Platform.exit();
     }

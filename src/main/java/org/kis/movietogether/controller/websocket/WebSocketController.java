@@ -63,27 +63,29 @@ public class WebSocketController {
     }
 
     public void userConnectedToHost(final User user) {
+        applicationController.userConnectedToHost(user);
     }
 
     public void userDisconnectedFromHost(final User user) {
-    }
-
-    public void userDetailsReceived(final User user) {
+        applicationController.userDisconnectedFromHost(user);
     }
 
     public void connectedToHost(final User host) {
+        applicationController.connectedToHost(host);
     }
 
     public void disconnectedFromHost() {
+        applicationController.disconnectedFromHost();
     }
 
-    public void userListReceivedByGuest(final Set<User> user) {
+    public void userListUpdated(final Set<User> users) {
+        applicationController.userListUpdated(users);
     }
 
     // TODO remove
     @EventListener(ApplicationReadyEvent.class)
     public void doSomethingAfterStartup() {
-        updateCurrentUserName("Szerver");
+        updateCurrentUserName("Server");
 
         /*serverPort = "29292";
         changeMode(WebSocketMode.GUEST);

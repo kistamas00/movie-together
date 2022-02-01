@@ -75,7 +75,7 @@ public abstract class AbstractWebSocketHandler extends TextWebSocketHandler {
                 (User user) -> {
                     user.setUserName(userName);
                     LOGGER.info("User name updated: [{}, {}]", sessionId, userName);
-                    webSocketController.userDetailsReceived(user);
+                    webSocketController.userListUpdated(userContainer.getUsers());
                 },
                 () -> LOGGER.warn("Couldn't find user: [{}, {}]", sessionId, userName));
     }

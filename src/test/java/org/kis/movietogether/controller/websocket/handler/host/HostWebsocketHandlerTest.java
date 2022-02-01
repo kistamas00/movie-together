@@ -84,13 +84,14 @@ class HostWebsocketHandlerTest {
         final TextMessage textMessage = new TextMessage("UserListUpdateMessage");
         when(userContainer.getUserBy(session2)).thenReturn(Optional.of(user2));
         when(userContainer.getUsersWithSession()).thenReturn(Set.of(user1, user2));
+        when(userContainer.getUsers()).thenReturn(Set.of(user1, updatedUser2));
         when(conversionService.convert(userListUpdateMessage, String.class)).thenReturn("UserListUpdateMessage");
 
         // WHEN
         hostWebsocketHandler.handleUserDetailsMessage(session2, message);
 
         // THEN
-        verify(webSocketController, times(1)).userDetailsReceived(updatedUser2);
+        verify(webSocketController, times(1)).userListUpdated(Set.of(user1, updatedUser2));
         verify(session1, times(1)).sendMessage(textMessage);
         verify(session2, times(1)).sendMessage(textMessage);
         assertThat(user2).isEqualTo(updatedUser2);
