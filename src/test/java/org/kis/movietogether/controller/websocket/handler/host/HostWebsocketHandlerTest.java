@@ -51,7 +51,6 @@ class HostWebsocketHandlerTest {
 
         // THEN
         verify(userContainer, times(1)).addUser(user);
-        verify(webSocketController, times(1)).userConnectedToHost(user);
         verify(session, times(1)).sendMessage(textMessage);
     }
 
@@ -91,6 +90,7 @@ class HostWebsocketHandlerTest {
         hostWebsocketHandler.handleUserDetailsMessage(session2, message);
 
         // THEN
+        verify(webSocketController, times(1)).userConnectedToHost(updatedUser2);
         verify(webSocketController, times(1)).userListUpdated(Set.of(user1, updatedUser2));
         verify(session1, times(1)).sendMessage(textMessage);
         verify(session2, times(1)).sendMessage(textMessage);

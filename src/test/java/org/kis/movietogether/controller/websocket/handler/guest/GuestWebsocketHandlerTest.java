@@ -16,8 +16,10 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +50,6 @@ class GuestWebsocketHandlerTest {
 
         // THEN
         verify(userContainer, times(1)).addUser(host);
-        verify(webSocketController, times(1)).connectedToHost(host);
         verify(session, times(1)).sendMessage(textMessage);
     }
 
@@ -63,6 +64,24 @@ class GuestWebsocketHandlerTest {
         // THEN
         verify(userContainer, times(1)).clear();
         verify(webSocketController, times(1)).disconnectedFromHost();
+    }
+
+    @Test
+    void testHandleUserDetailsMessage() {
+        // GIVEN
+        final WebSocketSession session = mock(WebSocketSession.class);
+        final UserDetailsMessage userDetailsMessage = new UserDetailsMessage().setUserName("User");
+        final User user = new User(session);
+        when(userContainer.getUserBy(session)).thenReturn(Optional.of(user));
+        when(userContainer.getUsers()).thenReturn(Set.of(user));
+
+        // WHEN
+        guestWebsocketHandler.handleUserDetailsMessage(session, userDetailsMessage);
+
+        // THEN
+        assertThat(user.getUserName()).isEqualTo("User");
+        verify(webSocketController, times(1)).connectedToHost(user);
+        verify(webSocketController, times(1)).userListUpdated(Set.of(user));
     }
 
     @Test

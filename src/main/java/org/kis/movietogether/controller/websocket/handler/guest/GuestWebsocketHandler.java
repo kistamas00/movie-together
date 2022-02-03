@@ -2,6 +2,7 @@ package org.kis.movietogether.controller.websocket.handler.guest;
 
 import org.kis.movietogether.controller.websocket.WebSocketController;
 import org.kis.movietogether.controller.websocket.handler.AbstractWebSocketHandler;
+import org.kis.movietogether.model.websocket.message.UserDetailsMessage;
 import org.kis.movietogether.model.websocket.message.UserListUpdateMessage;
 import org.kis.movietogether.model.websocket.user.User;
 import org.kis.movietogether.model.websocket.user.UserContainer;
@@ -14,6 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.net.InetSocketAddress;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,13 @@ public class GuestWebsocketHandler extends AbstractWebSocketHandler {
     public GuestWebsocketHandler(
             ConversionService conversionService, WebSocketController webSocketController, UserContainer userContainer) {
         super(conversionService, webSocketController, userContainer);
+    }
+
+    @Override
+    protected Optional<User> handleUserDetailsMessage(WebSocketSession session, UserDetailsMessage message) {
+        final Optional<User> optionalUser = super.handleUserDetailsMessage(session, message);
+        optionalUser.ifPresent(webSocketController::connectedToHost);
+        return optionalUser;
     }
 
     @Override
@@ -48,7 +57,6 @@ public class GuestWebsocketHandler extends AbstractWebSocketHandler {
         LOGGER.info("Connected to server: [{}, {}]", sessionId, localAddress);
         final User user = new User(session);
         userContainer.addUser(user);
-        webSocketController.connectedToHost(user);
         sendUserDetailsMessage(session);
     }
 

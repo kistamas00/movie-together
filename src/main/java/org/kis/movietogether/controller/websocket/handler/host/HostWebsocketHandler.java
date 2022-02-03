@@ -14,6 +14,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.net.InetSocketAddress;
+import java.util.Optional;
 
 @Component
 public class HostWebsocketHandler extends AbstractWebSocketHandler {
@@ -26,9 +27,13 @@ public class HostWebsocketHandler extends AbstractWebSocketHandler {
     }
 
     @Override
-    protected void handleUserDetailsMessage(WebSocketSession session, UserDetailsMessage message) {
-        super.handleUserDetailsMessage(session, message);
-        sendUserListUpdateMessages();
+    protected Optional<User> handleUserDetailsMessage(WebSocketSession session, UserDetailsMessage message) {
+        final Optional<User> optionalUser = super.handleUserDetailsMessage(session, message);
+        optionalUser.ifPresent((User user) -> {
+            webSocketController.userConnectedToHost(user);
+            sendUserListUpdateMessages();
+        });
+        return optionalUser;
     }
 
     @Override
@@ -44,7 +49,6 @@ public class HostWebsocketHandler extends AbstractWebSocketHandler {
         LOGGER.info("Client connected to server: [{}, {}]", sessionId, localAddress);
         final User user = new User(session);
         userContainer.addUser(user);
-        webSocketController.userConnectedToHost(user);
         sendUserDetailsMessage(session);
     }
 

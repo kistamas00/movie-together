@@ -1,5 +1,6 @@
 package org.kis.movietogether.controller.websocket.handler;
 
+import org.apache.logging.log4j.util.Strings;
 import org.kis.movietogether.controller.websocket.WebSocketController;
 import org.kis.movietogether.model.websocket.message.AbstractMessage;
 import org.kis.movietogether.model.websocket.message.UserDetailsMessage;
@@ -66,11 +67,12 @@ public abstract class AbstractWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    protected void handleUserDetailsMessage(
+    protected Optional<User> handleUserDetailsMessage(
             final WebSocketSession session, final UserDetailsMessage message) {
         final String sessionId = session.getId();
-        final Optional<User> optionalUser = userContainer.getUserBy(session);
         final String userName = message.getUserName();
+        final Optional<User> optionalUser = userContainer.getUserBy(session)
+                .filter(user -> Strings.isNotBlank(userName));
         optionalUser.ifPresentOrElse(
                 (User user) -> {
                     user.setUserName(userName);
@@ -78,6 +80,7 @@ public abstract class AbstractWebSocketHandler extends TextWebSocketHandler {
                     webSocketController.userListUpdated(userContainer.getUsers());
                 },
                 () -> LOGGER.warn("Couldn't find user: [{}, {}]", sessionId, userName));
+        return optionalUser;
     }
 
     protected abstract void handleUserListUpdateMessage(
