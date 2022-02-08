@@ -4,7 +4,7 @@ import org.kis.movietogether.model.websocket.user.User;
 
 import java.util.Set;
 
-public interface WebSocketEventListener {
+public interface WebSocketEventListener extends EventListener {
     void userConnectedToHost(final User user);
 
     void userDisconnectedFromHost(final User user);

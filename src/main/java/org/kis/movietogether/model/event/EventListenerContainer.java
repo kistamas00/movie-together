@@ -1,37 +1,40 @@
 package org.kis.movietogether.model.event;
 
-import org.kis.movietogether.controller.event.MediaEventListener;
-import org.kis.movietogether.controller.event.WebSocketEventListener;
+import org.kis.movietogether.controller.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 @Component
 public class EventListenerContainer {
 
-    private final Set<MediaEventListener> mediaEventListeners;
-    private final Set<WebSocketEventListener> webSocketEventListeners;
+    private final Map<Class<? extends EventListener>, Set<EventListener>> eventListeners;
 
     public EventListenerContainer() {
-        this.mediaEventListeners = new CopyOnWriteArraySet<>();
-        this.webSocketEventListeners = new CopyOnWriteArraySet<>();
+        this.eventListeners = new ConcurrentHashMap<>();
     }
 
-    public void addMediaEventListener(final MediaEventListener mediaEventListener) {
-        mediaEventListeners.add(mediaEventListener);
+    public <T extends EventListener> void addEventListener(final T eventListener) {
+        final Class<? extends EventListener> eventType = eventListener.getClass();
+        final Set<EventListener> eventListenersByType =
+                Optional.ofNullable(this.eventListeners.get(eventType))
+                        .orElseGet(() -> {
+                            final CopyOnWriteArraySet<EventListener> listeners = new CopyOnWriteArraySet<>();
+                            this.eventListeners.put(eventType, listeners);
+                            return listeners;
+                        });
+        eventListenersByType.add(eventListener);
     }
 
-    public void addWebSocketEventListener(final WebSocketEventListener webSocketEventListener) {
-        webSocketEventListeners.add(webSocketEventListener);
-    }
-
-    public Set<MediaEventListener> getMediaEventListeners() {
-        return Collections.unmodifiableSet(mediaEventListeners);
-    }
-
-    public Set<WebSocketEventListener> getWebSocketEventListeners() {
-        return Collections.unmodifiableSet(webSocketEventListeners);
+    public <T extends EventListener> Set<T> getEventListeners(final Class<T> eventType) {
+        final Set<EventListener> eventListenersByType =
+                this.eventListeners.getOrDefault(eventType, Collections.emptySet());
+        return eventListenersByType.stream().map(eventType::cast).collect(Collectors.toUnmodifiableSet());
     }
 }
