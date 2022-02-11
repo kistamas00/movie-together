@@ -2,8 +2,10 @@ package org.kis.movietogether.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kis.movietogether.controller.event.UiEventListener;
 import org.kis.movietogether.controller.event.WebSocketEventListener;
 import org.kis.movietogether.model.event.EventListenerContainer;
+import org.kis.movietogether.model.websocket.WebSocketMode;
 import org.kis.movietogether.model.websocket.user.User;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,7 +33,21 @@ class ApplicationControllerTest {
         applicationController.subscribe(webSocketEventListener);
 
         // THEN
-        verify(eventListenerContainer, times(1)).addEventListener(webSocketEventListener);
+        verify(eventListenerContainer, times(1))
+                .addEventListener(WebSocketEventListener.class, webSocketEventListener);
+    }
+
+    @Test
+    void testSubscribeUiEventListener() {
+        // GIVEN
+        final UiEventListener uiEventListener = mock(UiEventListener.class);
+
+        // WHEN
+        applicationController.subscribe(uiEventListener);
+
+        // THEN
+        verify(eventListenerContainer, times(1))
+                .addEventListener(UiEventListener.class, uiEventListener);
     }
 
     @Test
@@ -106,5 +122,61 @@ class ApplicationControllerTest {
 
         // THEN
         verify(webSocketEventListener, times(1)).userListUpdated(users);
+    }
+
+    @Test
+    void testChangeUserName() {
+        // GIVEN
+        final UiEventListener uiEventListener = mock(UiEventListener.class);
+        when(eventListenerContainer.getEventListeners(UiEventListener.class))
+                .thenReturn(Set.of(uiEventListener));
+
+        // WHEN
+        applicationController.changeUserName("User");
+
+        // THEN
+        verify(uiEventListener, times(1)).changeUserName("User");
+    }
+
+    @Test
+    void testChangeUserMode() {
+        // GIVEN
+        final UiEventListener uiEventListener = mock(UiEventListener.class);
+        when(eventListenerContainer.getEventListeners(UiEventListener.class))
+                .thenReturn(Set.of(uiEventListener));
+
+        // WHEN
+        applicationController.changeUserMode(WebSocketMode.GUEST);
+
+        // THEN
+        verify(uiEventListener, times(1)).changeUserMode(WebSocketMode.GUEST);
+    }
+
+    @Test
+    void testConnectToHost() {
+        // GIVEN
+        final UiEventListener uiEventListener = mock(UiEventListener.class);
+        when(eventListenerContainer.getEventListeners(UiEventListener.class))
+                .thenReturn(Set.of(uiEventListener));
+
+        // WHEN
+        applicationController.connectToHost("ip");
+
+        // THEN
+        verify(uiEventListener, times(1)).connectToHost("ip");
+    }
+
+    @Test
+    void testConnectToHostWithPort() {
+        // GIVEN
+        final UiEventListener uiEventListener = mock(UiEventListener.class);
+        when(eventListenerContainer.getEventListeners(UiEventListener.class))
+                .thenReturn(Set.of(uiEventListener));
+
+        // WHEN
+        applicationController.connectToHost("ip", "port");
+
+        // THEN
+        verify(uiEventListener, times(1)).connectToHost("ip", "port");
     }
 }

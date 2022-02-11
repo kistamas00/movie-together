@@ -20,8 +20,7 @@ public class EventListenerContainer {
         this.eventListeners = new ConcurrentHashMap<>();
     }
 
-    public <T extends EventListener> void addEventListener(final T eventListener) {
-        final Class<? extends EventListener> eventType = eventListener.getClass();
+    public <T extends EventListener> void addEventListener(final Class<T> eventType, final T eventListener) {
         final Set<EventListener> eventListenersByType =
                 Optional.ofNullable(this.eventListeners.get(eventType))
                         .orElseGet(() -> {

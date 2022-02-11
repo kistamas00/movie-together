@@ -22,14 +22,14 @@ class EventListenerContainerTest {
     void testAddAndGetEventListeners() {
         // GIVEN
         final WebSocketEventListener webSocketEventListener = mock(WebSocketEventListener.class);
-        eventListenerContainer.addEventListener(webSocketEventListener);
+        eventListenerContainer.addEventListener(WebSocketEventListener.class, webSocketEventListener);
 
         // WHEN
-        final Set<? extends WebSocketEventListener> webSocketEventListeners =
-                eventListenerContainer.getEventListeners(webSocketEventListener.getClass());
+        final Set<WebSocketEventListener> webSocketEventListeners =
+                eventListenerContainer.getEventListeners(WebSocketEventListener.class);
 
         // THEN
         assertThat(webSocketEventListeners)
-                .isEqualTo(Set.of(webSocketEventListener));
+                .containsExactly(webSocketEventListener);
     }
 }

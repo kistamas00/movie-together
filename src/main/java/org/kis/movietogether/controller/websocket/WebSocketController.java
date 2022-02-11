@@ -1,6 +1,7 @@
 package org.kis.movietogether.controller.websocket;
 
 import org.kis.movietogether.controller.ApplicationController;
+import org.kis.movietogether.controller.event.UiEventListener;
 import org.kis.movietogether.controller.websocket.handler.AbstractWebSocketHandler;
 import org.kis.movietogether.controller.websocket.handler.guest.GuestWebsocketHandler;
 import org.kis.movietogether.controller.websocket.handler.host.HostWebsocketHandler;
@@ -14,11 +15,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
+import javax.annotation.PostConstruct;
 import java.util.Objects;
 import java.util.Set;
 
 @Controller
-public class WebSocketController {
+public class WebSocketController implements UiEventListener {
 
     private final ApplicationController applicationController;
     private final HostWebsocketHandler hostWebsocketHandler;
@@ -41,25 +43,35 @@ public class WebSocketController {
         this.webSocketMode = WebSocketMode.HOST;
     }
 
-    // TODO refactor
-    private void changeMode(final WebSocketMode webSocketMode) {
-        this.webSocketMode = webSocketMode;
+    @PostConstruct
+    private void postConstruct() {
+        this.applicationController.subscribe(this);
     }
 
-    // TODO refactor
-    private void connectToHost(final String ip) {
+    @Override
+    public void changeUserName(String userName) {
+        userContainer.updateCurrentUserName(userName);
+    }
+
+    @Override
+    public void changeUserMode(WebSocketMode mode) {
+        this.webSocketMode = mode;
+    }
+
+    @Override
+    public void connectToHost(final String ip) {
+        connectToHost(ip, serverPort);
+    }
+
+    @Override
+    public void connectToHost(String ip, String port) {
         Objects.requireNonNull(userContainer.getCurrentUserName());
         if (webSocketMode == WebSocketMode.HOST) {
             throw new UnsupportedOperationException("Can't connect to an other server as a host!");
         }
         this.guestConnectionManager = AbstractWebSocketHandler.createClientConnection(
-                guestWebsocketHandler, ip, serverPort);
+                guestWebsocketHandler, ip, port);
         this.guestConnectionManager.start();
-    }
-
-    // TODO refactor
-    private void updateCurrentUserName(final String userName) {
-        userContainer.updateCurrentUserName(userName);
     }
 
     public void userConnectedToHost(final User user) {
@@ -80,16 +92,5 @@ public class WebSocketController {
 
     public void userListUpdated(final Set<User> users) {
         applicationController.userListUpdated(users);
-    }
-
-    // TODO remove
-    @EventListener(ApplicationReadyEvent.class)
-    public void doSomethingAfterStartup() {
-        updateCurrentUserName("Server");
-
-        /*serverPort = "29292";
-        changeMode(WebSocketMode.GUEST);
-        updateCurrentUserName("Tamas");
-        connectToHost("localhost");*/
     }
 }
