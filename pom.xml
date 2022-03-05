@@ -121,6 +121,13 @@
             <artifactId>commons-validator</artifactId>
             <version>1.7</version>
         </dependency>
+
+        <!-- VLCJ -->
+        <dependency>
+            <groupId>uk.co.caprica</groupId>
+            <artifactId>vlcj-javafx</artifactId>
+            <version>1.0.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -159,21 +166,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
-                <configuration>
-                    <argLine>
-                        --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED
-                    </argLine>
-
-                    <excludes>
-                        <exclude>ManagementControllerTest.java</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -19,6 +19,7 @@ public class ManagementController {
     private static final String BUTTON_STOP = "Stop";
     private static final String BUTTON_CONNECT = "Connect";
     private static final String BUTTON_DISCONNECT = "Disconnect";
+    public static final String FXML = "management-view.fxml";
 
 
     private final Validator inputValidator = new Validator();
@@ -101,6 +102,10 @@ public class ManagementController {
         if (username.isEmpty()) {
             context.error(USERNAME_EMPTY);
         }
+    }
+
+    public void exit() {
+        // Function called before application exits
     }
 
     public void log(String string) {
