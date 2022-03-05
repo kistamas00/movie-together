@@ -5,8 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.kis.movietogether.controller.ApplicationController;
 import org.kis.movietogether.controller.ui.management.ManagementController;
 import org.kis.movietogether.controller.ui.player.PlayerController;
+import org.kis.movietogether.model.websocket.WebSocketMode;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.io.IOException;
 public class UiController extends Application {
 
     private ConfigurableApplicationContext springContext;
+    private ApplicationController applicationController;
     private ManagementController managementController;
     private PlayerController playerController;
 
@@ -22,7 +25,17 @@ public class UiController extends Application {
 
     @Override
     public void init() {
-        this.springContext = org.kis.movietogether.Application.createAndRunSpringApplication();
+        this.springContext = org.kis.movietogether.Application
+                .createAndRunSpringApplication();
+        this.applicationController = springContext.getBean(ApplicationController.class);
+
+        //TODO remove begin
+        applicationController.changeUserName("Server");
+
+        /*applicationController.changeUserMode(WebSocketMode.GUEST);
+        applicationController.changeUserName("TestUser");
+        applicationController.connectToHost("localhost", "29292");*/
+        //TODO remove end
     }
 
     @Override
