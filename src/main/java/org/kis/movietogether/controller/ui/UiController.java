@@ -1,7 +1,6 @@
 package org.kis.movietogether.controller.ui;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -24,10 +23,6 @@ public class UiController extends Application {
     @Override
     public void init() {
         this.springContext = org.kis.movietogether.Application.createAndRunSpringApplication();
-    }
-
-    public static void start() {
-        launch();
     }
 
     @Override
@@ -76,17 +71,9 @@ public class UiController extends Application {
         playerController.exit();
         managementController.exit();
 
+        springContext.close();
+
         player.close();
         management.close();
-    }
-
-    @Override
-    public void stop() {
-        springContext.close();
-        Platform.exit();
-    }
-
-    private ManagementController getManagementController() {
-        return managementController;
     }
 }
