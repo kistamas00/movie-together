@@ -1,21 +1,30 @@
 package org.kis.movietogether.controller.ui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.kis.movietogether.controller.ui.management.ManagementController;
 import org.kis.movietogether.controller.ui.player.PlayerController;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.io.IOException;
 
 public class UiController extends Application {
+
+    private ConfigurableApplicationContext springContext;
     private ManagementController managementController;
     private PlayerController playerController;
 
     private Stage management;
     private Stage player;
+
+    @Override
+    public void init() {
+        this.springContext = org.kis.movietogether.Application.createAndRunSpringApplication();
+    }
 
     public static void start() {
         launch();
@@ -69,5 +78,15 @@ public class UiController extends Application {
 
         player.close();
         management.close();
+    }
+
+    @Override
+    public void stop() {
+        springContext.close();
+        Platform.exit();
+    }
+
+    private ManagementController getManagementController() {
+        return managementController;
     }
 }
