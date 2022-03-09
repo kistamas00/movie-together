@@ -1,6 +1,7 @@
 package org.kis.movietogether.controller.websocket;
 
-import org.kis.movietogether.controller.ApplicationController;
+import org.kis.movietogether.controller.application.ApplicationController;
+import org.kis.movietogether.controller.application.WebSocketApplicationController;
 import org.kis.movietogether.controller.event.UiEventListener;
 import org.kis.movietogether.controller.websocket.handler.AbstractWebSocketHandler;
 import org.kis.movietogether.controller.websocket.handler.guest.GuestWebsocketHandler;
@@ -9,9 +10,7 @@ import org.kis.movietogether.model.websocket.WebSocketMode;
 import org.kis.movietogether.model.websocket.user.User;
 import org.kis.movietogether.model.websocket.user.UserContainer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 
@@ -22,7 +21,7 @@ import java.util.Set;
 @Controller
 public class WebSocketController implements UiEventListener {
 
-    private final ApplicationController applicationController;
+    private final WebSocketApplicationController applicationController;
     private final HostWebsocketHandler hostWebsocketHandler;
     private final GuestWebsocketHandler guestWebsocketHandler;
     private final UserContainer userContainer;
@@ -32,7 +31,7 @@ public class WebSocketController implements UiEventListener {
     private String serverPort;
 
     public WebSocketController(
-            ApplicationController applicationController,
+            WebSocketApplicationController applicationController,
             @Lazy HostWebsocketHandler hostWebsocketHandler,
             @Lazy GuestWebsocketHandler guestWebsocketHandler,
             UserContainer userContainer) {

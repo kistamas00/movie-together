@@ -16,6 +16,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -64,6 +65,7 @@ class GuestWebsocketHandlerTest {
         // THEN
         verify(userContainer, times(1)).clear();
         verify(webSocketController, times(1)).disconnectedFromHost();
+        verify(webSocketController, times(1)).userListUpdated(Collections.emptySet());
     }
 
     @Test
@@ -89,7 +91,7 @@ class GuestWebsocketHandlerTest {
         // GIVEN
         final WebSocketSession session = mock(WebSocketSession.class);
         final UserListUpdateMessage userListUpdateMessage =
-                new UserListUpdateMessage().setUsers(Set.of("User1", "User2"));
+                new UserListUpdateMessage().setUserNames(Set.of("User1", "User2"));
         final User host = new User(session);
         final Set<User> updatedUsers = Set.of(host, new User("User1"), new User("User2"));
         when(userContainer.getUsersWithSession()).thenReturn(Set.of(host));

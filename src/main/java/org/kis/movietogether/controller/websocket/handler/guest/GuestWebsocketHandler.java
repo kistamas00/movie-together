@@ -39,10 +39,13 @@ public class GuestWebsocketHandler extends AbstractWebSocketHandler {
     @Override
     protected void handleUserListUpdateMessage(WebSocketSession session, UserListUpdateMessage message) {
         final String sessionId = session.getId();
-        final Set<User> validConnections = userContainer.getUsersWithSession();
-        final Set<User> updatedUsers = message.getUsers().stream().map(User::new).collect(Collectors.toSet());
+        final Set<User> host = userContainer.getUsersWithSession();
+        final Set<User> updatedUsers = message.getUserNames().stream()
+                .filter(username -> !username.equals(userContainer.getCurrentUserName()))
+                .map(User::new)
+                .collect(Collectors.toSet());
         final Set<User> newUsers = new HashSet<>();
-        newUsers.addAll(validConnections);
+        newUsers.addAll(host);
         newUsers.addAll(updatedUsers);
         userContainer.clear();
         userContainer.addUsers(newUsers);
@@ -67,5 +70,6 @@ public class GuestWebsocketHandler extends AbstractWebSocketHandler {
         LOGGER.info("Disconnected from server: [{}, {}, {}]", sessionId, localAddress, status);
         userContainer.clear();
         webSocketController.disconnectedFromHost();
+        webSocketController.userListUpdated(userContainer.getUsers());
     }
 }

@@ -2,18 +2,14 @@ package org.kis.movietogether.controller.websocket;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kis.movietogether.controller.ApplicationController;
-import org.kis.movietogether.controller.websocket.handler.guest.GuestWebsocketHandler;
-import org.kis.movietogether.controller.websocket.handler.host.HostWebsocketHandler;
+import org.kis.movietogether.controller.application.WebSocketApplicationController;
 import org.kis.movietogether.model.websocket.user.User;
-import org.kis.movietogether.model.websocket.user.UserContainer;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -21,7 +17,7 @@ import static org.mockito.Mockito.verify;
 class WebSocketControllerTest {
 
     @Mock
-    private ApplicationController applicationController;
+    private WebSocketApplicationController applicationController;
 
     @InjectMocks
     private WebSocketController webSocketController;

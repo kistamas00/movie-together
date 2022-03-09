@@ -6,18 +6,18 @@ import java.util.Set;
 
 public class UserListUpdateMessage extends AbstractMessage {
 
-    private Set<String> users;
+    private Set<String> userNames;
 
     public UserListUpdateMessage() {
         super(MessageType.USER_LIST);
     }
 
-    public Set<String> getUsers() {
-        return Collections.unmodifiableSet(users);
+    public Set<String> getUserNames() {
+        return Collections.unmodifiableSet(userNames);
     }
 
-    public UserListUpdateMessage setUsers(Set<String> users) {
-        this.users = Collections.unmodifiableSet(users);
+    public UserListUpdateMessage setUserNames(Set<String> userNames) {
+        this.userNames = Collections.unmodifiableSet(userNames);
         return this;
     }
 
@@ -30,11 +30,11 @@ public class UserListUpdateMessage extends AbstractMessage {
             return false;
         }
         UserListUpdateMessage that = (UserListUpdateMessage) o;
-        return Objects.equals(users, that.users);
+        return Objects.equals(userNames, that.userNames);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(users);
+        return Objects.hash(userNames);
     }
 }

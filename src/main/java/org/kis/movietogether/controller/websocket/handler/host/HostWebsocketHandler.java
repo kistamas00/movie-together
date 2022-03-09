@@ -60,6 +60,8 @@ public class HostWebsocketHandler extends AbstractWebSocketHandler {
         userContainer.getUserBy(session).ifPresent((User user) -> {
             userContainer.removeUser(user);
             webSocketController.userDisconnectedFromHost(user);
+            webSocketController.userListUpdated(userContainer.getUsers());
+            sendUserListUpdateMessages();
         });
     }
 }

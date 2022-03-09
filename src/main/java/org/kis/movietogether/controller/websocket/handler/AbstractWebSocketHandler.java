@@ -56,14 +56,11 @@ public abstract class AbstractWebSocketHandler extends TextWebSocketHandler {
         final AbstractMessage message = conversionService.convert(payload, AbstractMessage.class);
         Objects.requireNonNull(message);
         switch (message.getMessageType()) {
-            case USER_DETAILS:
-                handleUserDetailsMessage(session, convertMessage(message, UserDetailsMessage.class));
-                break;
-            case USER_LIST:
-                handleUserListUpdateMessage(session, convertMessage(message, UserListUpdateMessage.class));
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported messageType: " + message.getMessageType());
+            case USER_DETAILS -> handleUserDetailsMessage(session,
+                    convertMessage(message, UserDetailsMessage.class));
+            case USER_LIST -> handleUserListUpdateMessage(session,
+                    convertMessage(message, UserListUpdateMessage.class));
+            default -> throw new UnsupportedOperationException("Unsupported messageType: " + message.getMessageType());
         }
     }
 
@@ -107,18 +104,18 @@ public abstract class AbstractWebSocketHandler extends TextWebSocketHandler {
     }
 
     protected void sendUserListUpdateMessages() {
-        final Set<String> users = userContainer.getUsersWithSession().stream()
+        final Set<String> userNames = userContainer.getUsersWithSession().stream()
                 .map(User::getUserName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
         final UserListUpdateMessage newMessage = new UserListUpdateMessage()
-                .setUsers(users);
+                .setUserNames(userNames);
         userContainer.getUsersWithSession().stream()
                 .map(User::getSession)
                 .forEach((WebSocketSession session) -> {
                     final String sessionId = session.getId();
                     sendMessage(session, newMessage);
-                    LOGGER.info("User list sent to: [{}, {}]", sessionId, users);
+                    LOGGER.info("User list sent to: [{}, {}]", sessionId, userNames);
                 });
     }
 
